@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Создать</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        select {
+            width: 200px;
+        }
+        .cancel-button {
+            display: inline-block;
+            padding: 10px 25px;
+            background-color: #294c8f;
+            text-decoration: none;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 15px;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Создать</h1>
+
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form action="/create" method="POST" class="create-form" novalidate>
+        <div class="form-group">
+            <label for="system">System:</label>
+            <select id="system" name="system" required>
+                <option value="gwpc">gwpc</option>
+                <option value="apo">apo</option>
+                <option value="ekis">ekis</option>
+                <option value="virtu">virtu</option>
+                <option value="partner">partner</option>
+                <option value="site">site</option>
+                <option value="resolute">resolute</option>
+                <option value="jarvis">jarvis</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="system_part">System Part:</label>
+            <select id="system_part" name="system_part" required>
+                <option value="all">all</option>
+                <option value="agentology">agentology</option>
+                <option value="partners">partners</option>
+                <option value="office">office</option>
+                <option value="virtu">virtu</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="product">Product:</label>
+            <select id="product" name="product" required>
+                <option value="osago">osago</option>
+                <option value="kasko">kasko</option>
+                <option value="box">box</option>
+                <option value="all">all</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <h2>Count</h2>
+         </div>
+
+        <div class="form-group">
+            <label for="delta">Delta:</label>
+            <input type="text" id="delta" name="delta" required pattern="^(0(\.\d+)?|1(\.0+)?)$">
+            <div class="error-message" id="delta-error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="warning_time">Warning Time:</label>
+            <input type="text" id="warning_time" name="warning_time" required>
+        </div>
+
+        <div class="form-group">
+            <label for="critical_time">Critical Time:</label>
+            <input type="text" id="critical_time" name="critical_time" required>
+        </div>
+
+        <div class="form-group">
+            <h2>Null</h2>
+         </div>
+
+        <div class="form-group">
+            <label for="baseline">Baseline:</label>
+            <input type="text" id="baseline" name="baseline" required pattern="^(0(\.\d+)?|1(\.0+)?)$">
+            <div class="error-message" id="baseline-error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="null_warning_time">Warning Time:</label>
+            <input type="text" id="null_warning_time" name="null_warning_time" required>
+        </div>
+
+        <div class="form-group">
+            <label for="null_critical_time">Critical Time:</label>
+            <input type="text" id="null_critical_time" name="null_critical_time" required>
+        </div>
+
+        <div class="form-submit">
+            <input type="submit" value="Сохранить">
+            <a href="/sales" class="cancel-button">Отменить</a>
+        </div>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('.create-form');
+            var deltaInput = document.getElementById('delta');
+            var deltaError = document.getElementById('delta-error');
+
+            var baselineInput = document.getElementById('baseline');
+            var baselineError = document.getElementById('baseline-error');
+
+            form.addEventListener('submit', function(event) {
+                var deltaValue = parseFloat(deltaInput.value);
+                var baselineValue = parseFloat(baselineInput.value);
+                var isValid = true;
+
+                if (deltaValue < 0 || deltaValue > 1) {
+                    deltaError.textContent = 'Диапазон значений Delta должен быть от 0.1 до 1';
+                    isValid = false;
+                } else {
+                    deltaError.textContent = '';
+                }
+
+                if (baselineValue < 0 || baselineValue > 1) {
+                    baselineError.textContent = 'Диапазон значений Baseline должен быть от 0.1 до 1';
+                    isValid = false;
+                } else {
+                    baselineError.textContent = '';
+                }
+
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
